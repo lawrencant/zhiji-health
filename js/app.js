@@ -74,7 +74,6 @@ function setTab(tab) {
   if (tab === "home") state.checkinDraft = normalizeCheckin(getDay().checkin);
   if (tab === "sleep") initSleepDraft();
   if (tab === "mood") initMoodDraft();
-  if (tab === "trend") state.trendDay = todayKey();
   render();
 }
 
@@ -98,6 +97,7 @@ function initSleepDraft() {
 
 function openSecondary(name) {
   state.secondary = name;
+  if (name === "trend") state.trendDay = todayKey();
   render();
 }
 
@@ -144,14 +144,14 @@ function hideOverlay() {
 
 function render() {
   const root = viewEl();
-  if (state.secondary === "settings") {
+  if (state.secondary === "trend") {
     root.innerHTML = `<div class="secondary-layer" id="sec"></div>`;
-    renderSettings($("#sec"));
+    renderTrend($("#sec"), { secondary: true });
   } else if (state.tab === "home") renderHome(root);
   else if (state.tab === "sleep") renderSleep(root);
   else if (state.tab === "exercise") renderExercise(root);
   else if (state.tab === "mood") renderMood(root);
-  else if (state.tab === "trend") renderTrend(root);
+  else if (state.tab === "more") renderMore(root);
   renderPlayerBar();
 }
 
@@ -186,7 +186,7 @@ function renderHome(root) {
   root.innerHTML = `
     <div class="topbar">
       <div class="brand"><span class="brand-ico" aria-hidden="true"><svg viewBox="0 0 28 28" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 23.6c-.4 0-.8-.15-1.1-.4C8.2 19.2 4.6 15.6 4.6 11.5 4.6 8.4 6.9 6 9.9 6c1.7 0 3.2.8 4.1 2.1C14.9 6.8 16.4 6 18.1 6c3 0 5.3 2.4 5.3 5.5 0 4.1-3.6 7.7-8.3 11.7-.3.25-.7.4-1.1.4z" fill="#7CB87A" stroke="#4F8A5B" stroke-width="1.15" stroke-linejoin="round"/><path d="M3.8 13.2c-.2 2.8 1.4 5.2 3.8 7" stroke="#5FAE6C" stroke-width="1.7" stroke-linecap="round" opacity=".9"/><path d="M24.2 13.2c.2 2.8-1.4 5.2-3.8 7" stroke="#5FAE6C" stroke-width="1.7" stroke-linecap="round" opacity=".9"/><circle cx="11.2" cy="10.2" r="1.15" fill="#EAF5E6" opacity=".95"/><circle cx="16.6" cy="9.6" r=".7" fill="#EAF5E6" opacity=".75"/></svg></span>知己</div>
-      <button type="button" class="gear" id="go-settings">设置</button>
+      <span style="width:48px"></span>
     </div>
     <p class="greet">${escapeHtml(greeting())} · ${key}</p>
     <div class="score-wrap">
@@ -201,7 +201,6 @@ function renderHome(root) {
     }
     <div id="checkin-home"></div>
   `;
-  $("#go-settings").onclick = () => openSecondary("settings");
   renderCheckin($("#checkin-home"), { embedded: true });
 }
 
@@ -693,10 +692,16 @@ function renderMood(root) {
 }
 
 /* —— 趋势 —— */
-function renderTrend(root) {
+function renderTrend(root, opts = {}) {
+  const secondary = !!opts.secondary;
+  const backBtn = secondary
+    ? `<button type="button" class="back" id="back">返回</button>`
+    : `<span></span>`;
+
   if (!hasAnyHistory()) {
-    root.innerHTML = `<div class="topbar"><span></span><div class="ttl">趋势</div><span style="width:48px"></span></div>
+    root.innerHTML = `<div class="topbar">${backBtn}<div class="ttl">趋势</div><span style="width:48px"></span></div>
       <div class="emp"><div class="big">📈</div><b>还没有记录数据</b><br>先记几天睡眠、运动或情绪，再来看变化</div>`;
+    if (secondary) $("#back").onclick = () => closeSecondary();
     return;
   }
 
@@ -706,7 +711,7 @@ function renderTrend(root) {
   const moodSeries = seriesMood(range);
 
   root.innerHTML = `
-    <div class="topbar"><span></span><div class="ttl">趋势</div><span style="width:48px"></span></div>
+    <div class="topbar">${backBtn}<div class="ttl">趋势</div><span style="width:48px"></span></div>
     <div class="seg" id="range">
       <button type="button" class="${range === "week" ? "on" : ""}" data-r="week">一周</button>
       <button type="button" class="${range === "month" ? "on" : ""}" data-r="month">一月</button>
@@ -722,6 +727,7 @@ function renderTrend(root) {
     </div>
   `;
 
+  if (secondary) $("#back").onclick = () => closeSecondary();
   $all("#range button").forEach((b) => {
     b.onclick = () => {
       state.trendRange = b.dataset.r;
@@ -866,10 +872,14 @@ function renderDaySum(el, key) {
   </div>`;
 }
 
-/* —— 设置 —— */
-function renderSettings(root) {
+/* —— 更多 —— */
+function renderMore(root) {
   root.innerHTML = `
-    <div class="topbar"><button type="button" class="back" id="back">返回</button><div class="ttl">设置</div><span style="width:48px"></span></div>
+    <div class="topbar"><span></span><div class="ttl">更多</div><span style="width:48px"></span></div>
+    <button type="button" class="card clickable" id="go-trend">
+      <div class="card-h"><div class="left"><span class="ico-round" aria-hidden="true"><svg class="ico-trend" viewBox="0 0 32 32" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="18" width="5.2" height="8" rx="1.2" stroke="currentColor" stroke-width="1.5"/><rect x="13.4" y="12" width="5.2" height="14" rx="1.2" stroke="currentColor" stroke-width="1.5"/><rect x="21.3" y="6.5" width="5.2" height="19.5" rx="1.2" stroke="currentColor" stroke-width="1.5"/><path d="M8 20.5 L16 14.2 L24 9" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/></svg></span>趋势</div><span class="muted">›</span></div>
+      <div class="muted">周 / 月 / 年变化与按日回看</div>
+    </button>
     <div class="card">
       <div class="card-h"><div class="left">数据管理</div></div>
       <p class="muted">不需要登录。下一版会做账号和云端。</p>
@@ -883,7 +893,7 @@ function renderSettings(root) {
       v3.0 · 2026.09 本机保存；账号云同步下一版再做。</p>
     </div>
   `;
-  $("#back").onclick = () => closeSecondary();
+  $("#go-trend").onclick = () => openSecondary("trend");
   $("#export").onclick = () => {
     try {
       const name = `zhiji-backup-${todayKey()}.json`;
@@ -900,7 +910,6 @@ function renderSettings(root) {
       const text = await file.text();
       importData(JSON.parse(text));
       toast("数据已导入");
-      closeSecondary();
       setTab("home");
     } catch (_) {
       toast("文件格式错误");
@@ -920,7 +929,6 @@ function renderSettings(root) {
       await clearCustomAudio().catch(() => {});
       hideOverlay();
       toast("数据已清除");
-      closeSecondary();
       setTab("home");
     };
   };

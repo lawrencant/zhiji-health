@@ -144,8 +144,10 @@ body {
 }
 .ico-round.ico-ex svg,
 .ico-round.ico-stool svg,
-.ico-round.ico-sleep svg {
+.ico-round.ico-sleep svg,
+.ico-round .ico-trend {
   display: block;
+  color: var(--green-700);
 }
 .ico-round.ico-stool,
 .ico-round.ico-sleep {
@@ -630,7 +632,8 @@ body {
 .tab-ico { font-size: 16px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
 .ico-sun,
 .ico-trend,
-.ico-sleep-tab {
+.ico-sleep-tab,
+.ico-more {
   display: block;
   color: var(--green-700);
   stroke-linejoin: round;
@@ -656,12 +659,14 @@ body {
 }
 .tab.on .ico-sun,
 .tab.on .ico-trend,
-.tab.on .ico-sleep-tab {
+.tab.on .ico-sleep-tab,
+.tab.on .ico-more {
   color: var(--green-700);
 }
 .tab:not(.on) .ico-sun,
 .tab:not(.on) .ico-trend,
-.tab:not(.on) .ico-sleep-tab {
+.tab:not(.on) .ico-sleep-tab,
+.tab:not(.on) .ico-more {
   color: var(--text-secondary);
 }
 
