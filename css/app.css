@@ -594,7 +594,29 @@ body {
   border-radius: var(--r-full);
   background: var(--green-700);
 }
-.tab-ico { font-size: 16px; line-height: 1; }
+.tab-ico { font-size: 16px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
+.ico-sun {
+  display: block;
+  color: var(--green-700);
+  stroke-linejoin: round;
+}
+.ico-sun-wrap {
+  color: var(--green-700);
+}
+.chip .ico-sun {
+  width: 15px;
+  height: 15px;
+  color: inherit;
+}
+.chip.on .ico-sun {
+  color: #fff;
+}
+.tab.on .ico-sun {
+  color: var(--green-700);
+}
+.tab:not(.on) .ico-sun {
+  color: var(--text-secondary);
+}
 
 .toast {
   position: fixed;

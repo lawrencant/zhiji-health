@@ -15,7 +15,7 @@ export function parseKey(key) {
 export function greeting(now = new Date()) {
   const h = now.getHours();
   if (h < 6 || h >= 22) return "夜深了，早点休息 🌙";
-  if (h <= 8) return "早上好，新的一天 ☀️";
+  if (h <= 8) return "早上好，新的一天";
   if (h <= 11) return "上午好，精力满满 💪";
   if (h <= 13) return "中午好，别忘了吃饭 🍚";
   if (h <= 17) return "下午好，记得喝水 💧";

@@ -5,6 +5,9 @@ export const STORAGE_BROKEN = "zhiji_v3_broken";
 export const LEGACY_KEY = "zhiji_v2";
 export const AUDIO_DB = "zhiji_audio";
 
+/** 空心太阳：无填充，弯弯光线，柔软线稿 */
+export const ICON_SUN = `<svg class="ico-sun" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="5.2" stroke="currentColor" stroke-width="1.55"/><path d="M14.1 5.6c1.3-1.15 2.5-1.15 3.8 0" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/><path d="M23.6 8.8c1.35.55 1.85 1.55 1.35 2.95" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/><path d="M26.4 14.2c1.15 1.25 1.15 2.45 0 3.7" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/><path d="M23.6 23.2c-.55 1.35-1.55 1.85-2.95 1.35" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/><path d="M17.9 26.4c-1.25 1.15-2.45 1.15-3.7 0" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/><path d="M8.8 23.6c-1.35-.55-1.85-1.55-1.35-2.95" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/><path d="M5.6 17.9c-1.15-1.25-1.15-2.45 0-3.7" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/><path d="M8.8 8.8c.55-1.35 1.55-1.85 2.95-1.35" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/></svg>`;
+
 export const EXERCISES = [
   { id: "jingang", group: "常规", name: "金刚蹲", unit: "分钟", goal: 2 },
   { id: "plank", group: "常规", name: "平板支撑", unit: "秒", goal: 60 },
@@ -17,7 +20,7 @@ export const EXERCISES = [
 ];
 
 export const MOODS = [
-  { id: "joy", label: "开心愉悦", color: "var(--mood-joy)", icon: "☀", hug: "这份好心情值得被记住。让身体里的暖再多留一会儿。", q1: "现在身体哪一处是松的或暖的？", q2: "想对这份心情说一句什么？" },
+  { id: "joy", label: "开心愉悦", color: "var(--mood-joy)", icon: ICON_SUN, hug: "这份好心情值得被记住。让身体里的暖再多留一会儿。", q1: "现在身体哪一处是松的或暖的？", q2: "想对这份心情说一句什么？" },
   { id: "calm", label: "平静放松", color: "var(--mood-calm)", icon: "🍃", hug: "平静本身就是一种力量。你可以慢慢待在这种安定里。", q1: "呼吸、肩膀、肚子，哪里最稳？", q2: "想让这份安定听到一句什么？" },
   { id: "sad", label: "低落难过", color: "var(--mood-sad)", icon: "☁", hug: "难过可以待着，不必马上好起来。我在这儿陪你。", q1: "难过或发沉停在身体的哪？", q2: "想对它说：我看见你了——后面还可以补半句" },
   { id: "anxiety", label: "焦虑紧张", color: "var(--mood-anxiety)", icon: "〰️", hug: "先把肩膀放下来。你已经在面对了，这一刻这样就好。", q1: "胸口、肚子、手、牙关，哪里最紧？", q2: "想对这份紧说一句什么才能让它松一点？" },
