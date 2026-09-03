@@ -6,7 +6,7 @@ export const LEGACY_KEY = "zhiji_v2";
 export const AUDIO_DB = "zhiji_audio";
 
 export const EXERCISES = [
-  { id: "jingang", group: "常规", name: "金刚蹲", unit: "次", goal: 20 },
+  { id: "jingang", group: "常规", name: "金刚蹲", unit: "分钟", goal: 2 },
   { id: "plank", group: "常规", name: "平板支撑", unit: "秒", goal: 60 },
   { id: "bridge", group: "常规", name: "臀桥", unit: "次", goal: 20 },
   { id: "squat", group: "常规", name: "深蹲", unit: "次", goal: 20 },
