@@ -80,7 +80,7 @@ body {
 }
 
 .muted { color: var(--text-secondary); font-size: 12px; }
-.greet { font-size: 13px; color: var(--text-secondary); margin: 0 0 10px; }
+.greet { font-size: 13px; color: var(--text-secondary); margin: 0 0 8px; }
 
 .card {
   background: var(--surface);
@@ -167,7 +167,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 4px 0 14px;
+  /* 外圈软晕约 14px，多留空让问候文案不贴住圆环 */
+  margin: 22px 0 14px;
   position: relative;
 }
 
