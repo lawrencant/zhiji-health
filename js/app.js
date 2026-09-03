@@ -6,6 +6,8 @@ import {
   MOODS,
   CHECKIN_DEFAULTS,
   WATER_MAP,
+  WATER_OPTIONS,
+  WATER_LEGACY,
   BUILTIN_TRACKS,
   ICON_SUN,
 } from "./constants.js";
@@ -102,10 +104,12 @@ function openSecondary(name) {
 
 function normalizeCheckin(c) {
   if (!c) return { ...CHECKIN_DEFAULTS, meals: [], supplements: ["无"], moxa_points: ["今日未灸"] };
-  const water =
+  let water =
     typeof c.water === "string" && WATER_MAP[c.water] != null
       ? c.water
       : Object.entries(WATER_MAP).find(([, ml]) => ml === (c.water_ml || 0))?.[0] || "未记";
+  if (WATER_LEGACY[water]) water = WATER_LEGACY[water];
+  if (!WATER_OPTIONS.includes(water)) water = "未记";
   return {
     ...CHECKIN_DEFAULTS,
     ...c,
@@ -214,9 +218,9 @@ function renderHome(root) {
       <span class="cta-arrow" aria-hidden="true">›</span>
     </button>
     ${
-      d.checkin && w < 800
-        ? `<div class="water-bar">饮水${w < 400 ? "严重不足" : "还需补充"} · ${w}/1000ml
-            <div class="bar"><div class="fill" style="width:${Math.min(100, (w / 1000) * 100)}%"></div></div></div>`
+      d.checkin && w > 0 && w < 1000
+        ? `<div class="water-bar">饮水${w < 500 ? "严重不足" : "还需补充"} · ${w}/2000ml
+            <div class="bar"><div class="fill" style="width:${Math.min(100, (w / 2000) * 100)}%"></div></div></div>`
         : ""
     }
     ${empty ? `<div class="emp-illust home-plant" aria-hidden="true">🪴</div>` : ""}
@@ -453,7 +457,7 @@ function renderCheckin(root) {
     ${singleChips("appetite", "食量", ["正常", "偏少", "偏多", "不想吃"])}
     ${singleChips("taste", "口味", ["清淡", "一般", "偏油腻", "偏甜咸"])}
     ${singleChips("snacks", "零食", ["无", "少许", "较多"])}
-    ${singleChips("water", "饮水", ["未记", "300ml", "500ml", "800ml", "1000ml", "1500ml", "2000ml+"])}
+    ${singleChips("water", "饮水", WATER_OPTIONS)}
     ${multiChips("supplements", "药物/补品", ["无", "维生素", "钙片鱼油等营养剂", "膏方", "中药", "西药", "其他保健品"], "无")}
     <div class="grp">二便</div>
     ${selectHtml("stool_count", "大便次数", ["0", "1", "2", "3", "4+"])}
