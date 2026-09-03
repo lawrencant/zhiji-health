@@ -288,6 +288,27 @@ body {
 .checkin-cta .cta-text {
   flex: 1;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.cta-tap {
+  display: inline-flex;
+  color: #fff;
+  flex-shrink: 0;
+  animation: tap-nudge 1.6s ease-in-out infinite;
+}
+.cta-tap svg {
+  display: block;
+}
+@keyframes tap-nudge {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(2px) rotate(-2deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-tap { animation: none; }
 }
 .checkin-cta .cta-ico {
   width: 22px;

@@ -210,7 +210,7 @@ function renderHome(root) {
     </div>
     <button type="button" class="checkin-cta" id="go-checkin">
       <span class="cta-ico" aria-hidden="true">🍃</span>
-      <span class="cta-text">点击开启身心健康的全面记录吧~</span>
+      <span class="cta-text"><span class="cta-tap" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.2 11.2V7.4a1.5 1.5 0 0 1 3 0v2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12.2 9.6V6.8a1.5 1.5 0 0 1 3 0v3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M15.2 10V7.6a1.5 1.5 0 0 1 3 0v5.8c0 2.6-1.7 4.8-4.2 5.5l-.8.2c-2.8.8-5.7-.7-6.7-3.4L5.2 11a1.35 1.35 0 0 1 2.5-1l1.5 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.2 4.2c.5-.7 1.2-1.1 1.8-1.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".85"/><path d="M10.6 2.8c.15-.7.6-1.2 1.2-1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".7"/></svg></span>开启身心健康的全面记录吧~</span>
       <span class="cta-arrow" aria-hidden="true">›</span>
     </button>
     ${
