@@ -218,7 +218,7 @@ function renderHome(root) {
             <div class="bar"><div class="fill" style="width:${Math.min(100, (w / 1000) * 100)}%"></div></div></div>`
         : ""
     }
-    ${empty ? `<div class="emp"><div class="big">🪴</div><b>今天还没有记录</b><br>点心情、运动或睡眠卡片，或点「今日打卡」开始</div>` : ""}
+    ${empty ? `<div class="emp"><div class="big">🪴</div><b>今天还没有记录</b><br>点今日打卡，开启身心健康的全面记录~</div>` : ""}
     <button type="button" class="card clickable" id="card-mood"><div class="card-h"><div class="left"><span class="ico-round">☀</span>心情</div></div>
       <div>${mood ? escapeHtml(mood) : '<span class="muted">去情绪页选一选</span>'}</div></button>
     <button type="button" class="card clickable" id="card-ex"><div class="card-h"><div class="left"><span class="ico-round ico-ex" aria-hidden="true"><svg viewBox="0 0 32 32" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><rect x="11" y="14" width="10" height="4.2" rx="2.1" fill="#4F8A5B"/><circle cx="8.2" cy="16.1" r="5.2" fill="#7CB87A"/><circle cx="8.2" cy="16.1" r="3.3" fill="#5FAE6C"/><circle cx="23.8" cy="16.1" r="5.2" fill="#7CB87A"/><circle cx="23.8" cy="16.1" r="3.3" fill="#5FAE6C"/><circle cx="7.1" cy="14.8" r="0.7" fill="#EAF5E6"/><circle cx="22.7" cy="14.8" r="0.7" fill="#EAF5E6"/><path d="M14.6 9.2c.5-1.2 1.3-1.8 1.9-1.8s1.4.6 1.9 1.8" stroke="#4F8A5B" stroke-width="1.6" stroke-linecap="round" fill="none"/><circle cx="16" cy="11.2" r="1.15" fill="#4F8A5B"/></svg></span>运动</div></div>
