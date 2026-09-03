@@ -481,7 +481,55 @@ body {
   padding: 12px;
   font-size: 14px;
   line-height: 1.7;
-  margin: 10px 0;
+  margin: 0;
+}
+
+/* 情绪页：三大板块更醒目，块间距拉开，底部少留白 */
+.mood-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 4px;
+  min-height: calc(100dvh - var(--nav-h) - env(safe-area-inset-bottom) - 36px);
+}
+.mood-page .topbar {
+  margin-bottom: 0;
+}
+.mood-block {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  padding: 14px 14px 16px;
+}
+.mood-block-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 750;
+  color: var(--green-900);
+  letter-spacing: 0.02em;
+}
+.mood-block-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7CB87A, #4F8A5B);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px var(--green-100);
+}
+.mood-block .muted-card {
+  margin: 0;
+}
+.mood-block .field:last-child {
+  margin-bottom: 0;
+}
+.mood-save {
+  margin-top: auto;
+  padding-top: 6px;
+  background: none;
 }
 
 .progress {

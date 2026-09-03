@@ -674,29 +674,37 @@ function renderMood(root) {
   const mood = MOODS.find((m) => m.label === d.label);
 
   root.innerHTML = `
+    <div class="mood-page">
     <div class="topbar"><span></span><div class="ttl">情绪 ${d.saved && d.label ? '<span class="badge">今日已记下</span>' : ""}</div><span style="width:48px"></span></div>
 
-    <div class="grp">今日心情</div>
-    <div class="chip-wrap" id="moods">${MOODS.map(
-      (m) => `<button type="button" class="chip mood ${d.label === m.label ? "on" : ""}" data-l="${escapeHtml(m.label)}"><span>${m.icon}</span>${escapeHtml(m.label)}</button>`
-    ).join("")}</div>
+    <section class="mood-block">
+      <h3 class="mood-block-title"><span class="mood-block-dot" aria-hidden="true"></span>今日心情</h3>
+      <div class="chip-wrap" id="moods">${MOODS.map(
+        (m) => `<button type="button" class="chip mood ${d.label === m.label ? "on" : ""}" data-l="${escapeHtml(m.label)}"><span>${m.icon}</span>${escapeHtml(m.label)}</button>`
+      ).join("")}</div>
+    </section>
 
-    <div class="grp">抱抱你</div>
-    ${
-      mood
-        ? `<div class="bubble">🤗 ${escapeHtml(mood.hug)}</div>`
-        : `<div class="card muted-card"><span class="muted">先选一个今日心情，这里会出现一句抱抱你</span></div>`
-    }
+    <section class="mood-block">
+      <h3 class="mood-block-title"><span class="mood-block-dot" aria-hidden="true"></span>抱抱你</h3>
+      ${
+        mood
+          ? `<div class="bubble">🤗 ${escapeHtml(mood.hug)}</div>`
+          : `<div class="muted-card"><span class="muted">先选一个今日心情，这里会出现一句抱抱你</span></div>`
+      }
+    </section>
 
-    <div class="grp">情绪觉察</div>
-    ${
-      mood
-        ? `<div class="field"><label>${escapeHtml(mood.q1)}</label><textarea id="body" maxlength="80" rows="2" placeholder="可选，写一句也可以">${escapeHtml(d.body)}</textarea></div>
-           <div class="field"><label>${escapeHtml(mood.q2)}</label><textarea id="words" maxlength="80" rows="2" placeholder="可选，写一句也可以">${escapeHtml(d.words)}</textarea></div>`
-        : `<div class="card muted-card"><span class="muted">选好心情后，这里会出现两道觉察小问</span></div>`
-    }
+    <section class="mood-block">
+      <h3 class="mood-block-title"><span class="mood-block-dot" aria-hidden="true"></span>情绪觉察</h3>
+      ${
+        mood
+          ? `<div class="field"><label>${escapeHtml(mood.q1)}</label><textarea id="body" maxlength="80" rows="2" placeholder="可选，写一句也可以">${escapeHtml(d.body)}</textarea></div>
+             <div class="field"><label>${escapeHtml(mood.q2)}</label><textarea id="words" maxlength="80" rows="2" placeholder="可选，写一句也可以">${escapeHtml(d.words)}</textarea></div>`
+          : `<div class="muted-card"><span class="muted">选好心情后，这里会出现两道觉察小问</span></div>`
+      }
+    </section>
 
-    <div class="sticky-save"><button type="button" class="btn pri" id="save-mood">保存今日情绪</button></div>
+    <div class="sticky-save mood-save"><button type="button" class="btn pri" id="save-mood">保存今日情绪</button></div>
+    </div>
   `;
 
   $all("#moods .chip").forEach((c) => {
