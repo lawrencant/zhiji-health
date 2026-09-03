@@ -627,7 +627,8 @@ body {
   background: var(--green-700);
 }
 .tab-ico { font-size: 16px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
-.ico-sun {
+.ico-sun,
+.ico-trend {
   display: block;
   color: var(--green-700);
   stroke-linejoin: round;
@@ -651,10 +652,12 @@ body {
 .chip.on .ico-mood {
   color: #fff;
 }
-.tab.on .ico-sun {
+.tab.on .ico-sun,
+.tab.on .ico-trend {
   color: var(--green-700);
 }
-.tab:not(.on) .ico-sun {
+.tab:not(.on) .ico-sun,
+.tab:not(.on) .ico-trend {
   color: var(--text-secondary);
 }
 
