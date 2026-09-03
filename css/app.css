@@ -91,6 +91,14 @@ body {
   margin-bottom: 10px;
 }
 
+.muted-card {
+  box-shadow: none;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .card.clickable {
   cursor: pointer;
   transition: transform 80ms var(--ease);
