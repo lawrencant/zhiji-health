@@ -523,6 +523,15 @@ body {
 .mood-block .muted-card {
   margin: 0;
 }
+.mood-placeholder {
+  min-height: 48px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px dashed var(--line);
+}
+.mood-placeholder-tall {
+  min-height: 96px;
+}
 .mood-block .field:last-child {
   margin-bottom: 0;
 }

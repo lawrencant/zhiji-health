@@ -689,7 +689,7 @@ function renderMood(root) {
       ${
         mood
           ? `<div class="bubble">🤗 ${escapeHtml(mood.hug)}</div>`
-          : `<div class="muted-card"><span class="muted">先选一个今日心情，这里会出现一句抱抱你</span></div>`
+          : `<div class="mood-placeholder" aria-hidden="true"></div>`
       }
     </section>
 
@@ -699,7 +699,7 @@ function renderMood(root) {
         mood
           ? `<div class="field"><label>${escapeHtml(mood.q1)}</label><textarea id="body" maxlength="80" rows="2" placeholder="可选，写一句也可以">${escapeHtml(d.body)}</textarea></div>
              <div class="field"><label>${escapeHtml(mood.q2)}</label><textarea id="words" maxlength="80" rows="2" placeholder="可选，写一句也可以">${escapeHtml(d.words)}</textarea></div>`
-          : `<div class="muted-card"><span class="muted">选好心情后，这里会出现两道觉察小问</span></div>`
+          : `<div class="mood-placeholder mood-placeholder-tall" aria-hidden="true"></div>`
       }
     </section>
 
