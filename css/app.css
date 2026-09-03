@@ -635,12 +635,20 @@ body {
 .ico-sun-wrap {
   color: var(--green-700);
 }
-.chip .ico-sun {
+.ico-mood {
+  display: block;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  stroke-linejoin: round;
+}
+.chip .ico-sun,
+.chip .ico-mood {
   width: 15px;
   height: 15px;
   color: inherit;
 }
-.chip.on .ico-sun {
+.chip.on .ico-sun,
+.chip.on .ico-mood {
   color: #fff;
 }
 .tab.on .ico-sun {
