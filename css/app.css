@@ -629,7 +629,8 @@ body {
 }
 .tab-ico { font-size: 16px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
 .ico-sun,
-.ico-trend {
+.ico-trend,
+.ico-sleep-tab {
   display: block;
   color: var(--green-700);
   stroke-linejoin: round;
@@ -654,11 +655,13 @@ body {
   color: #fff;
 }
 .tab.on .ico-sun,
-.tab.on .ico-trend {
+.tab.on .ico-trend,
+.tab.on .ico-sleep-tab {
   color: var(--green-700);
 }
 .tab:not(.on) .ico-sun,
-.tab:not(.on) .ico-trend {
+.tab:not(.on) .ico-trend,
+.tab:not(.on) .ico-sleep-tab {
   color: var(--text-secondary);
 }
 

@@ -9,7 +9,6 @@ import {
   WATER_OPTIONS,
   WATER_LEGACY,
   BUILTIN_TRACKS,
-  ICON_SUN,
 } from "./constants.js";
 import {
   loadStore,
@@ -69,8 +68,11 @@ const overlayEl = () => document.getElementById("overlay");
 
 function setTab(tab) {
   if (state.secondary) closeSecondary(false);
+  if (state.tab === "sleep" && tab !== "sleep") pauseAudio();
   state.tab = tab;
   $all(".tab").forEach((b) => b.classList.toggle("on", b.dataset.tab === tab));
+  if (tab === "home") state.checkinDraft = normalizeCheckin(getDay().checkin);
+  if (tab === "sleep") initSleepDraft();
   if (tab === "mood") initMoodDraft();
   if (tab === "trend") state.trendDay = todayKey();
   render();
@@ -83,22 +85,19 @@ function initMoodDraft() {
     : { label: "", body: "", words: "", saved: false };
 }
 
+function initSleepDraft() {
+  const s = getDay().sleep || {};
+  state.sleepDraft = {
+    bed: s.bed || "",
+    wake: s.wake || "",
+    wakes: s.wakes || "0",
+    dream: s.dream || "无",
+    override: s.override || null,
+  };
+}
+
 function openSecondary(name) {
   state.secondary = name;
-  if (name === "sleep") {
-    const s = getDay().sleep || {};
-    state.sleepDraft = {
-      bed: s.bed || "",
-      wake: s.wake || "",
-      wakes: s.wakes || "0",
-      dream: s.dream || "无",
-      override: s.override || null,
-    };
-  }
-  if (name === "checkin") {
-    const c = getDay().checkin;
-    state.checkinDraft = normalizeCheckin(c);
-  }
   render();
 }
 
@@ -122,10 +121,8 @@ function normalizeCheckin(c) {
 }
 
 function closeSecondary(doPause = true) {
-  if (doPause && state.secondary === "sleep") pauseAudio();
+  void doPause;
   state.secondary = null;
-  state.sleepDraft = null;
-  state.checkinDraft = null;
   render();
 }
 
@@ -147,13 +144,11 @@ function hideOverlay() {
 
 function render() {
   const root = viewEl();
-  if (state.secondary) {
+  if (state.secondary === "settings") {
     root.innerHTML = `<div class="secondary-layer" id="sec"></div>`;
-    const sec = $("#sec");
-    if (state.secondary === "sleep") renderSleep(sec);
-    else if (state.secondary === "checkin") renderCheckin(sec);
-    else if (state.secondary === "settings") renderSettings(sec);
+    renderSettings($("#sec"));
   } else if (state.tab === "home") renderHome(root);
+  else if (state.tab === "sleep") renderSleep(root);
   else if (state.tab === "exercise") renderExercise(root);
   else if (state.tab === "mood") renderMood(root);
   else if (state.tab === "trend") renderTrend(root);
@@ -180,31 +175,17 @@ function renderPlayerBar() {
   };
 }
 
-/* —— 首页 —— */
+/* —— 首页（健康分 + 今日打卡一级表单） —— */
 function renderHome(root) {
   const key = todayKey();
   const d = getDay(key);
   const score = healthScore(key);
-  const mood = d.mood?.label;
-  const exCount = d.exercise ? Object.keys(d.exercise).filter((k) => d.exercise[k]?.value != null).length : 0;
-  const sleep = d.sleep;
-  const showScore = displaySleepScore(sleep);
-  const showLevel = displaySleepLevel(sleep);
-  const hours = sleep ? sleepHours(sleep.bed, sleep.wake) : null;
   const w = waterMl(d.checkin);
-  const empty = !d.sleep && !d.checkin && !d.mood && !exCount;
-
-  let sleepBody = '<span class="muted">点击记录睡眠</span>';
-  if (showScore != null) {
-    sleepBody = sleep?.override
-      ? `你的判断：${escapeHtml(sleep.override)}（系统 ${sleep.systemScore ?? "—"} 分）`
-      : `${showScore} 分`;
-    if (hours != null) sleepBody += `<div class="muted">${escapeHtml(sleep.bed)} → ${escapeHtml(sleep.wake)} · ${hours}h</div>`;
-  }
+  if (!state.checkinDraft) state.checkinDraft = normalizeCheckin(d.checkin);
 
   root.innerHTML = `
     <div class="topbar">
-      <div class="brand"><span class="brand-ico" aria-hidden="true"><svg viewBox="0 0 28 28" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><!-- 圆润爱心主体 --><path d="M14 23.6c-.4 0-.8-.15-1.1-.4C8.2 19.2 4.6 15.6 4.6 11.5 4.6 8.4 6.9 6 9.9 6c1.7 0 3.2.8 4.1 2.1C14.9 6.8 16.4 6 18.1 6c3 0 5.3 2.4 5.3 5.5 0 4.1-3.6 7.7-8.3 11.7-.3.25-.7.4-1.1.4z" fill="#7CB87A" stroke="#4F8A5B" stroke-width="1.15" stroke-linejoin="round"/><!-- 拥抱感：两侧环抱弧 --><path d="M3.8 13.2c-.2 2.8 1.4 5.2 3.8 7" stroke="#5FAE6C" stroke-width="1.7" stroke-linecap="round" opacity=".9"/><path d="M24.2 13.2c.2 2.8-1.4 5.2-3.8 7" stroke="#5FAE6C" stroke-width="1.7" stroke-linecap="round" opacity=".9"/><!-- 活泼高光 --><circle cx="11.2" cy="10.2" r="1.15" fill="#EAF5E6" opacity=".95"/><circle cx="16.6" cy="9.6" r=".7" fill="#EAF5E6" opacity=".75"/></svg></span>知己</div>
+      <div class="brand"><span class="brand-ico" aria-hidden="true"><svg viewBox="0 0 28 28" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 23.6c-.4 0-.8-.15-1.1-.4C8.2 19.2 4.6 15.6 4.6 11.5 4.6 8.4 6.9 6 9.9 6c1.7 0 3.2.8 4.1 2.1C14.9 6.8 16.4 6 18.1 6c3 0 5.3 2.4 5.3 5.5 0 4.1-3.6 7.7-8.3 11.7-.3.25-.7.4-1.1.4z" fill="#7CB87A" stroke="#4F8A5B" stroke-width="1.15" stroke-linejoin="round"/><path d="M3.8 13.2c-.2 2.8 1.4 5.2 3.8 7" stroke="#5FAE6C" stroke-width="1.7" stroke-linecap="round" opacity=".9"/><path d="M24.2 13.2c.2 2.8-1.4 5.2-3.8 7" stroke="#5FAE6C" stroke-width="1.7" stroke-linecap="round" opacity=".9"/><circle cx="11.2" cy="10.2" r="1.15" fill="#EAF5E6" opacity=".95"/><circle cx="16.6" cy="9.6" r=".7" fill="#EAF5E6" opacity=".75"/></svg></span>知己</div>
       <button type="button" class="gear" id="go-settings">设置</button>
     </div>
     <p class="greet">${escapeHtml(greeting())} · ${key}</p>
@@ -212,49 +193,28 @@ function renderHome(root) {
       <div class="score-ring" style="--p:${score}"><b>${score}</b><span>健康分</span></div>
       <div class="score-deco" aria-hidden="true">✦ · ✦ · ✦</div>
     </div>
-    <button type="button" class="checkin-cta" id="go-checkin">
-      <span class="cta-ico" aria-hidden="true">🍃</span>
-      <span class="cta-text"><span class="cta-tap" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.2 11.2V7.4a1.5 1.5 0 0 1 3 0v2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12.2 9.6V6.8a1.5 1.5 0 0 1 3 0v3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M15.2 10V7.6a1.5 1.5 0 0 1 3 0v5.8c0 2.6-1.7 4.8-4.2 5.5l-.8.2c-2.8.8-5.7-.7-6.7-3.4L5.2 11a1.35 1.35 0 0 1 2.5-1l1.5 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.2 4.2c.5-.7 1.2-1.1 1.8-1.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".85"/><path d="M10.6 2.8c.15-.7.6-1.2 1.2-1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".7"/></svg></span>开启身心健康的全面记录吧~</span>
-      <span class="cta-arrow" aria-hidden="true">›</span>
-    </button>
     ${
       d.checkin && w > 0 && w < 1000
         ? `<div class="water-bar">饮水${w < 500 ? "严重不足" : "还需补充"} · ${w}/2000ml
             <div class="bar"><div class="fill" style="width:${Math.min(100, (w / 2000) * 100)}%"></div></div></div>`
         : ""
     }
-    ${empty ? `<div class="emp-illust home-plant" aria-hidden="true">🪴</div>` : ""}
-    <button type="button" class="card clickable" id="card-mood"><div class="card-h"><div class="left"><span class="ico-round ico-sun-wrap">${ICON_SUN}</span>心情</div></div>
-      <div>${mood ? escapeHtml(mood) : '<span class="muted">去情绪页选一选</span>'}</div></button>
-    <button type="button" class="card clickable" id="card-ex"><div class="card-h"><div class="left"><span class="ico-round ico-ex" aria-hidden="true"><svg viewBox="0 0 32 32" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><rect x="11" y="14" width="10" height="4.2" rx="2.1" fill="#4F8A5B"/><circle cx="8.2" cy="16.1" r="5.2" fill="#7CB87A"/><circle cx="8.2" cy="16.1" r="3.3" fill="#5FAE6C"/><circle cx="23.8" cy="16.1" r="5.2" fill="#7CB87A"/><circle cx="23.8" cy="16.1" r="3.3" fill="#5FAE6C"/><circle cx="7.1" cy="14.8" r="0.7" fill="#EAF5E6"/><circle cx="22.7" cy="14.8" r="0.7" fill="#EAF5E6"/><path d="M14.6 9.2c.5-1.2 1.3-1.8 1.9-1.8s1.4.6 1.9 1.8" stroke="#4F8A5B" stroke-width="1.6" stroke-linecap="round" fill="none"/><circle cx="16" cy="11.2" r="1.15" fill="#4F8A5B"/></svg></span>运动</div></div>
-      <div>${exCount ? `今日已记 ${exCount} 项` : '<span class="muted">还没动</span>'}</div></button>
-    <button type="button" class="card clickable" id="card-sleep"><div class="card-h"><div class="left"><span class="ico-round ico-sleep" aria-hidden="true"><svg viewBox="0 0 32 32" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 22.5h6.2l-5.6 5.2h6.4" stroke="#8FCB8C" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.2 14.2h7.2L11.8 20.8h7.4" stroke="#5FAE6C" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.2 5.2h8.2L19 12.6h8.6" stroke="#4F8A5B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27.2" cy="4.4" r="1.2" fill="#7CB87A"/></svg></span>睡眠</div>
-      ${showLevel ? `<span class="badge ${levelClass(showLevel)}">${escapeHtml(showLevel)}</span>` : ""}</div>
-      <div>${sleepBody}</div></button>
-    ${
-      d.checkin?.weight
-        ? `<button type="button" class="card clickable" id="card-wt"><div class="card-h"><div class="left"><span class="ico-round">⚖</span>体重</div></div>
-           <div>${escapeHtml(d.checkin.weight)} kg</div></button>`
-        : ""
-    }
+    <div id="checkin-home"></div>
   `;
   $("#go-settings").onclick = () => openSecondary("settings");
-  $("#go-checkin").onclick = () => openSecondary("checkin");
-  $("#card-mood").onclick = () => setTab("mood");
-  $("#card-ex").onclick = () => setTab("exercise");
-  $("#card-sleep").onclick = () => openSecondary("sleep");
-  $("#card-wt") && ($("#card-wt").onclick = () => openSecondary("checkin"));
+  renderCheckin($("#checkin-home"), { embedded: true });
 }
 
-/* —— 睡眠 —— */
+/* —— 睡眠（一级 Tab） —— */
 function renderSleep(root) {
+  if (!state.sleepDraft) initSleepDraft();
   const draft = state.sleepDraft;
   const hours = sleepHours(draft.bed, draft.wake);
   const preview = calcSleepScore({ hours, wakes: draft.wakes, dream: draft.dream });
   const showLevel = draft.override || preview.level;
 
   root.innerHTML = `
-    <div class="topbar"><button type="button" class="back" id="back">返回</button><div class="ttl">睡眠</div><span style="width:48px"></span></div>
+    <div class="topbar"><span></span><div class="ttl">睡眠</div><span style="width:48px"></span></div>
     <div class="score-wrap">
       ${
         preview.score == null
@@ -278,7 +238,6 @@ function renderSleep(root) {
     <div class="sticky-save"><button type="button" class="btn pri" id="save-sleep">保存睡眠</button></div>
   `;
 
-  $("#back").onclick = () => closeSecondary();
   const refresh = () => {
     draft.bed = $("#bed").value;
     draft.wake = $("#wake").value;
@@ -301,7 +260,7 @@ function renderSleep(root) {
       if (preview.score == null) return toast("先填入睡和起床，让我打个分");
       showOverlay(
         `<div class="modal"><h3>你觉得实际更接近哪一档？</h3>
-         <p class="muted">系统分会保留，首页按你选的档来显示</p>
+         <p class="muted">系统分会保留，按你选的档来计入健康分</p>
          <div class="chip-wrap" id="ov-chips">${chipHtml(["安稳", "一般", "需关注"], draft.override)}</div>
          <button type="button" class="btn pri" id="ov-ok">确定</button>
          <button type="button" class="btn" id="ov-reset">恢复系统判断</button>
@@ -351,7 +310,7 @@ function renderSleep(root) {
     try {
       saveStore();
       toast(result.score == null ? "先记上了。补全入睡和起床后才会有睡眠分" : "睡眠已记下");
-      setTimeout(() => closeSecondary(), 300);
+      renderSleep(root);
     } catch (_) {
       toast("没存上，请再试一次");
     }
@@ -444,12 +403,17 @@ async function fillTracks(el) {
   });
 }
 
-/* —— 打卡 —— */
-function renderCheckin(root) {
+/* —— 打卡（嵌在首页为一级） —— */
+function renderCheckin(root, opts = {}) {
+  const embedded = !!opts.embedded;
   const d = state.checkinDraft;
   root.innerHTML = `
-    <div class="topbar"><button type="button" class="back" id="back">返回</button><div class="ttl">今日打卡</div><span style="width:48px"></span></div>
-    <p class="muted">今天的身体情况，点选即可，能填多少算多少</p>
+    ${
+      embedded
+        ? `<div class="grp">今日打卡</div><p class="muted" style="margin-top:-4px">今天的身体情况，点选即可，能填多少算多少</p>`
+        : `<div class="topbar"><button type="button" class="back" id="back">返回</button><div class="ttl">今日打卡</div><span style="width:48px"></span></div>
+    <p class="muted">今天的身体情况，点选即可，能填多少算多少</p>`
+    }
     <div class="grp">体重</div>
     <div class="field"><label>体重 (kg)</label><input type="number" id="weight" inputmode="decimal" step="0.1" value="${escapeHtml(d.weight)}" /><div class="err" id="w-err"></div></div>
     <div class="grp">饮食</div>
@@ -464,11 +428,6 @@ function renderCheckin(root) {
     ${selectHtml("stool_form", "大便形态", ["成形", "偏干", "偏稀/不成型", "水样"])}
     ${selectHtml("stool_color", "大便颜色", ["正常", "偏黑", "偏黄", "偏绿"])}
     ${selectHtml("urine", "小便次数", ["3次以下", "4-5次", "6-7次", "8次以上"])}
-    <div class="grp">体征</div>
-    ${selectHtml("limbs", "手脚温度", ["温热", "脚凉", "手脚都凉"])}
-    ${selectHtml("tongue", "舌苔", ["正常", "厚腻", "淡白", "偏红"])}
-    ${selectHtml("thirst", "口渴", ["正常", "口干想喝水", "口干但不想喝", "不渴"])}
-    ${selectHtml("sweat", "出汗", ["正常", "汗多", "盗汗", "不出汗"])}
     <div class="grp">艾灸</div>
     ${multiChips("moxa_points", "穴位", ["今日未灸", "足三里", "关元", "气海", "命门", "涌泉", "三阴交", "神阙", "百会", "其他穴位"], "今日未灸")}
     ${singleChips("moxa_minutes", "时长（分钟）", ["10", "15", "20", "30", "45", "60"])}
@@ -494,13 +453,11 @@ function renderCheckin(root) {
       .join("")}</select></div>`;
   }
 
-  // BUG: functions used before definition in template string - need hoist
-  // Actually in JS function declarations inside renderCheckin are hoisted within the function body!
-  // Function declarations are hoisted to the top of the enclosing function, so singleChips etc. ARE available when evaluating the template. Good.
+  // Function declarations are hoisted within renderCheckin.
 
-  $("#back").onclick = () => closeSecondary();
+  if (!embedded) $("#back").onclick = () => closeSecondary();
 
-  $all("[data-single]").forEach((wrap) => {
+  $all("[data-single]", root).forEach((wrap) => {
     const key = wrap.dataset.single;
     $all(".chip", wrap).forEach((c) => {
       c.onclick = () => {
@@ -510,7 +467,7 @@ function renderCheckin(root) {
     });
   });
 
-  $all("[data-multi]").forEach((wrap) => {
+  $all("[data-multi]", root).forEach((wrap) => {
     const key = wrap.dataset.multi;
     const ex = wrap.dataset.ex;
     $all(".chip", wrap).forEach((c) => {
@@ -531,30 +488,31 @@ function renderCheckin(root) {
     });
   });
 
-  $all("[data-sel]").forEach((sel) => {
+  $all("[data-sel]", root).forEach((sel) => {
     sel.onchange = () => {
       d[sel.dataset.sel] = sel.value;
     };
   });
 
-  $("#save-checkin").onclick = () => {
-    const w = $("#weight").value.trim();
-    $("#w-err").textContent = "";
+  $("#save-checkin", root).onclick = () => {
+    const w = $("#weight", root).value.trim();
+    $("#w-err", root).textContent = "";
     if (w !== "") {
       const n = Number(w);
       if (Number.isNaN(n) || n < 30 || n > 200) {
-        $("#w-err").textContent = "体重请填 30–200 之间的数字";
+        $("#w-err", root).textContent = "体重请填 30–200 之间的数字";
         return;
       }
     }
-    const btn = $("#save-checkin");
+    const btn = $("#save-checkin", root);
     btn.disabled = true;
     btn.textContent = "保存中…";
     const waterLabel = d.water || "未记";
+    const { limbs: _l, tongue: _t, thirst: _th, sweat: _s, ...rest } = d;
     dayOf().checkin = {
-      ...d,
+      ...rest,
       weight: w,
-      note: $("#note").value.slice(0, 80),
+      note: $("#note", root).value.slice(0, 80),
       water: waterLabel,
       water_ml: WATER_MAP[waterLabel] ?? 0,
       moxa_minutes: d.moxa_points?.includes("今日未灸") ? "" : d.moxa_minutes,
@@ -562,7 +520,9 @@ function renderCheckin(root) {
     try {
       saveStore();
       toast("记录已保存");
-      setTimeout(() => closeSecondary(), 300);
+      state.checkinDraft = normalizeCheckin(dayOf().checkin);
+      if (embedded) render();
+      else setTimeout(() => closeSecondary(), 300);
     } catch (_) {
       toast("存储空间不足，请先导出再清理");
       btn.disabled = false;
