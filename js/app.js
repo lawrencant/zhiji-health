@@ -221,10 +221,11 @@ function renderHome(root) {
     ${
       empty
         ? `<div class="emp emp-guide">
-            <div class="emp-arrow" aria-hidden="true">↑</div>
-            <p class="emp-hint">点今日打卡，开启身心健康的全面记录~</p>
+            <div class="emp-box">
+              <p class="emp-title">今天还没有记录</p>
+              <p class="emp-hint">点今日打卡，开启身心健康的全面记录~</p>
+            </div>
             <div class="emp-illust" aria-hidden="true">🪴</div>
-            <p class="emp-sub">今天还没有记录</p>
           </div>`
         : ""
     }

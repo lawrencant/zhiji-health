@@ -333,50 +333,37 @@ body {
 }
 .emp .big { font-size: 36px; margin-bottom: 6px; }
 
-/* 空状态：文案贴近「今日打卡」，箭头向上引导 */
+/* 空状态：白色文案框紧贴「今日打卡」，盆栽在下 */
 .emp-guide {
-  margin: -4px 0 8px;
-  padding: 2px 12px 12px;
+  margin: -2px 0 10px;
+  padding: 0;
 }
-.emp-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  margin: 0 auto 2px;
-  border-radius: var(--r-full);
-  background: var(--green-100);
-  color: var(--green-700);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-  animation: emp-bounce 1.4s var(--ease) infinite;
-}
-.emp-hint {
+.emp-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  padding: 12px 14px;
   margin: 0 0 10px;
+}
+.emp-title {
+  margin: 0 0 4px;
   font-size: 14px;
   font-weight: 650;
   color: var(--green-900);
+  line-height: 1.4;
+}
+.emp-hint {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 .emp-illust {
   font-size: 28px;
   line-height: 1;
-  margin-bottom: 4px;
   opacity: 0.9;
-}
-.emp-sub {
-  margin: 0;
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-@keyframes emp-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .emp-arrow { animation: none; }
 }
 
 .btn {
